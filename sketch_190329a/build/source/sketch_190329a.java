@@ -17,20 +17,45 @@ import java.io.IOException;
 public class sketch_190329a extends PApplet {
 
 Environment env;
+Agent agent;
 
 public void setup() {
     background(0);
     int winDim = 1000;
+    int size = 8;
     
-    env = new Environment(10, winDim, false, true);
-
+    env = new Environment(size, winDim, false, true);
+    agent = new Agent(size, winDim);
 }
 
 public void draw() {
     env.render();
+    agent.render();
 }
 class Agent {
-    
+    int x;
+    int y;
+    int index;
+    int gridSize;
+    int winDim;
+
+    Agent(int gridSize, int winDim) {
+        this.x = 0;
+        this.y = 0;
+        this.index = 0;
+        this.gridSize = gridSize;
+        this.winDim = winDim;
+    }
+
+    public void render() {
+        float size = (this.winDim/this.gridSize);
+        float x = this.x * (size);
+        float y = this.y * (size);
+        x += (size)/2;
+        y += (size)/2;
+        fill(0xff1ef0fe);
+        ellipse(x, y, size, size);
+    }
 }
 
 
@@ -84,7 +109,6 @@ class Environment{
         // Draw Contents: 0=empty, 1=Start, 2=Finish, 3=Obstacle, 4=Landmine
         for (int i = 0; i < this.contents.length; i++) {
             double chance = generator.nextDouble();
-            System.out.println(chance);
             if (i == 0) {
                 contents[i] = 1;
                 continue;
@@ -103,8 +127,23 @@ class Environment{
         }
     }
 
+    public void allowedActions(int x, int y) {
+        if (y > 0 && this.contents[index(x, y-1)] != 3) {
+            // Allow Up
+        }
+        if (x < this.size-1 && this.contents[index(x+1, y)] != 3) {
+            // Allow Right
+        }
+        if (y < this.size-1 && this.contents[index(x, y+1)] != 3) {
+            // Allow Down
+        }
+        if (x > 0 && this.contents[index(x-1, y)] != 3) {
+            // Allow Left
+        }
+    }
+
     public void grid(int size) {
-        stroke(0xff7d169c);
+        stroke(0xffffffff);
         strokeWeight(1);
         for (int i=0; i < this.winDim; i += this.winDim/size) {
             line(i, 0, i, winDim);
@@ -129,16 +168,16 @@ class Environment{
                 noFill();
                 break;
             case 1 :
-                fill(0, 200, 255);
+                fill(0xff0000ff);
                 break;
             case 2 :
-                fill(0, 255, 0);
+                fill(0xff00ff00);
                 break;
             case 3 :
-                fill(125, 125, 125);
+                fill(0xff808080);
                 break;
             case 4 :
-                fill(255, 0, 0);
+                fill(0xffff0000);
                 break;
         }
         rect(len*x+1,len*y+1, len-1, len-1);

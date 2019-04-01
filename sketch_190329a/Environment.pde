@@ -50,7 +50,6 @@ class Environment{
         // Draw Contents: 0=empty, 1=Start, 2=Finish, 3=Obstacle, 4=Landmine
         for (int i = 0; i < this.contents.length; i++) {
             double chance = generator.nextDouble();
-            System.out.println(chance);
             if (i == 0) {
                 contents[i] = 1;
                 continue;
@@ -69,8 +68,23 @@ class Environment{
         }
     }
 
+    void allowedActions(int x, int y) {
+        if (y > 0 && this.contents[index(x, y-1)] != 3) {
+            // Allow Up
+        }
+        if (x < this.size-1 && this.contents[index(x+1, y)] != 3) {
+            // Allow Right
+        }
+        if (y < this.size-1 && this.contents[index(x, y+1)] != 3) {
+            // Allow Down
+        }
+        if (x > 0 && this.contents[index(x-1, y)] != 3) {
+            // Allow Left
+        }
+    }
+
     void grid(int size) {
-        stroke(#7d169c);
+        stroke(#ffffff);
         strokeWeight(1);
         for (int i=0; i < this.winDim; i += this.winDim/size) {
             line(i, 0, i, winDim);
@@ -95,16 +109,16 @@ class Environment{
                 noFill();
                 break;
             case 1 :
-                fill(0, 200, 255);
+                fill(#0000ff);
                 break;
             case 2 :
-                fill(0, 255, 0);
+                fill(#00ff00);
                 break;
             case 3 :
-                fill(125, 125, 125);
+                fill(#808080);
                 break;
             case 4 :
-                fill(255, 0, 0);
+                fill(#ff0000);
                 break;
         }
         rect(len*x+1,len*y+1, len-1, len-1);
